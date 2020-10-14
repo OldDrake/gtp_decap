@@ -1,11 +1,9 @@
 from scapy.all import *
+from scapy.layers.inet import UDP, TCP
 from scapy.layers.l2 import *
 
 
-def GTP_Decap(iface, count):
-    dpkt = sniff(iface=iface, count=count)
-    #dpkt = sniff(offline="dns.pcap")
-    pkt_decap = []
+def GTP_DeCap(dpkt, iface):
     for pkt in dpkt:
         data = pkt[Raw].load
         if data[0] & 0xe0 == 0x20:          #GTPv1
@@ -28,9 +26,8 @@ def GTP_Decap(iface, count):
                 data = data[12:]
             elif data[0] & 0x0f == 0x00:
                 data = data[8:]
-        pkt_decap.append(data)
         sendp(Ether(type=0x0800)/data, iface=iface)
-    return pkt_decap
+    return
 
 
 
