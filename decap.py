@@ -1,5 +1,5 @@
 from scapy.all import *
-from scapy.layers.inet import UDP, TCP
+from scapy.layers.inet import UDP, TCP, IP
 from scapy.layers.l2 import *
 
 
@@ -26,7 +26,8 @@ def GTP_DeCap(dpkt, iface):
                 data = data[12:]
             elif data[0] & 0x0f == 0x00:
                 data = data[8:]
-        sendp(Ether(type=0x0800)/data, iface=iface)
+        data = IP(data)
+        send(data, iface=iface, verbose=0)
     return
 
 
